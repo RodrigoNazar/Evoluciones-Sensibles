@@ -49,7 +49,7 @@ def senser(sensor, stream):
         time.sleep(TIME)
 
 
-def lighter(leds, stream):
+def lighter(leds, stream, n_leds=100, debug=False):
     # prev_mean = 50
     prev_median = 50
 
@@ -64,7 +64,7 @@ def lighter(leds, stream):
 
         print('\nEl stream es', stream)
         # print(f'La media sensada es {actual_mean}')
-        print('La mediana sensada es', actual_median)  # N // 2 muestras para el trigger
+        print('La mediana 'alejo'sensada es', actual_median)  # N // 2 muestras para el trigger
         # print(f'La velocidad del objeto en media es: {vel_mean}')
         print('La velocidad del objeto en mediana es:', vel_median)
 

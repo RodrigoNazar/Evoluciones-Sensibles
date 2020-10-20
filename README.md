@@ -30,5 +30,3 @@ Código fuente del proyecto de Evoluciones Sensibles de Lucía Rosselot, Diseño
 
 
 ## To Do
-
-* Conocer bien el rango de fade de pwm en los leds
