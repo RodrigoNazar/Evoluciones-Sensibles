@@ -34,3 +34,12 @@ def matrix_read(path):
         data = json.load(file)
 
     return data
+
+
+def leds_left(done_leds, n_leds=100):
+    leds = [i for i in range(1, n_leds + 1)]
+
+    for i in done_leds:
+        leds.remove(i)
+
+    print(leds)

@@ -1,5 +1,5 @@
 
-from utils.utils import matrix_save, matrix_read
+from utils.utils import matrix_save, matrix_read, leds_left
 import json
 
 
@@ -20,6 +20,14 @@ def matrix_read_test():
     print(a, type(a), len(a))
 
 
+def leds_left_here():
+
+    DONE_LEDS = [100, 99]
+
+    leds_left(DONE_LEDS)
+
+
 if __name__ == '__main__':
     # matrix_save_test()
-    matrix_read_test()
+    # matrix_read_test()
+    leds_left_here()
