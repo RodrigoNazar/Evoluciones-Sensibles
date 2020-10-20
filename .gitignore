@@ -130,7 +130,7 @@ dmypy.json
 
 # Added
 *.wav
-*.png
+# *.png
 
 # Latex
 logo.pdf
