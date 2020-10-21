@@ -29,23 +29,17 @@ def matrix_save(matrix, name, beautify=False):
 
 
 def matrix_read(path):
-
     with open(path, 'r') as file:
         data = []
         for line in file:
-            if line != '[\n' or line != ']\n':
-                row = []
+            if line != '[\n' and line != ']\n' and line != '\n':
+                # row = []
                 process = ''.join(line.split(','))
                 process = process.split(' ')
-                process = ''.join(process)[1:-2]
-
-                for elem in process:
-                    if elem != '\n':
-                        row.append(int(elem))
-
-                if row:
-                    data.append(row)
-
+                process = process[1:-2]
+                process = [i for i in process
+                           if i != '' and i != '[' and i != ']']
+                data.append(process)
     return data
 
 

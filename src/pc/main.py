@@ -8,16 +8,16 @@ def matrix_save_test():
 
     test = [[i for i in range(10)] for _ in range(10)]
 
-    matrix_save(test, 'test.json')
+    matrix_save(test, 'Grid.txt')
 
-    with open('test.json', 'r') as file:
+    with open('Grid.txt', 'r') as file:
         a = json.load(file)
 
     print(a, type(a), len(a))
 
 
 def matrix_read_test():
-    a = matrix_read('test.json')
+    a = matrix_read('Grid.txt')
     a = np.array(a)
     print(a, type(a), a.shape)
 
