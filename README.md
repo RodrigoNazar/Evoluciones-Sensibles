@@ -1,8 +1,9 @@
 # Evoluciones-Sensibles
-Código fuente del proyecto de Evoluciones Sensibles de Lucía Rosselot, Diseño UC 2020.
+Source code of **Lucía Rosselot's** project: ```Evoluciones Sensibles```.
 
+Pontificia Universidad Católica de Chile, Escuela de Diseño, 2020.
 
-## Recursos Importantes
+## Core Resources
 
 * *Getting started with MicroPython on the ESP32*: https://docs.micropython.org/en/latest/esp32/tutorial/intro.html
 
@@ -17,7 +18,7 @@ Código fuente del proyecto de Evoluciones Sensibles de Lucía Rosselot, Diseño
 * *ESP32 firmware*: https://micropython.org/download/esp32/
 
 
-## Comandos útiles
+## Useful Commands
 
 * esptool.py -p /dev/ttyUSB0 erase_flash
 
