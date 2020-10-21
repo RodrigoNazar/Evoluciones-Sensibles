@@ -91,6 +91,12 @@ def grid_test(debug=False):
     print('despues', grid.get_state_element_by_pos(26, 39))
     print('stream', grid.states)
 
+    # LED 39 -- again
+    print('LED 39 -- again')
+    print('seteando...', grid.set_state_element_by_pos(26, 39, (0, 230, 120)))
+    print('despues', grid.get_state_element_by_pos(26, 39))
+    print('stream', grid.states)
+
     print('grid object size', get_size(grid))
 
 

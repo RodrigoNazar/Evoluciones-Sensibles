@@ -98,13 +98,13 @@ class Grid:
         # We search if the led was on
         state = [elem for elem in self.states[-1] if elem[0] == n_led]
 
-        # print('\nStart set state element debug')
-
-        # print(self.states)
-
         # If its on, we overwrite the color
         if state:
             new_state = self.states[-1].copy()
+
+            for indx, elem in enumerate(new_state):
+                if n_led == elem[0]:
+                    new_state[indx] = (n_led, *color)
 
         # If the led was off, we turn it on
         else:
@@ -121,8 +121,6 @@ class Grid:
             self.strip[n_led] = color
 
         self.states.append(new_state)
-
-        # print('Stop set state element debug\n')
 
     def set_state_elements(self, elems):
         '''
