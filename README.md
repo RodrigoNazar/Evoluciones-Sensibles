@@ -1,5 +1,5 @@
 # Evoluciones-Sensibles
-Source code of **Lucía Rosselot's** project: ```Evoluciones Sensibles```.
+Source code of **Lucía Rosselot**'s project: ```Evoluciones Sensibles```.
 
 Pontificia Universidad Católica de Chile, Escuela de Diseño, 2020.
 

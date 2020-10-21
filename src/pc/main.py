@@ -2,8 +2,6 @@
 from utils.utils import matrix_save, matrix_read, leds_left
 from utils.data_structures import Grid, Stream
 import json
-import numpy as np
-
 
 import sys
 
@@ -43,12 +41,6 @@ def matrix_save_test():
     print(a, type(a), len(a))
 
 
-def matrix_read_test():
-    a = matrix_read('Grid.txt')
-    a = np.array(a)
-    print(a, type(a), a.shape)
-
-
 def leds_left_here():
 
     DONE_LEDS = [100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87]
@@ -56,8 +48,8 @@ def leds_left_here():
     leds_left(DONE_LEDS)
 
 
-def grid_test(debug=False):
-    grid = matrix_read('Grid.txt')
+def grid_test(path, debug=False):
+    grid = matrix_read(path)
 
     grid = Grid(grid, strip=[i for i in range(1, 101)])
 
@@ -122,7 +114,6 @@ def stream_test():
 
 if __name__ == '__main__':
     # matrix_save_test()
-    # matrix_read_test()
     # leds_left_here()
-    grid_test()
+    grid_test('Grid.txt')
     # stream_test()

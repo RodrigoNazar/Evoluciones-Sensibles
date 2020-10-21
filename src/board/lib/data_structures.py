@@ -1,15 +1,52 @@
-info = '''
-data estructures module
-'''
 
 
 class Grid:
-    def __init__(self, grid):
-        self.grid = grid
-        self.state = self.gen_state_grid()
+    def __init__(self, grid, strip, center=(23, 27)):
+        # Physical devices
+        self.grid = grid  # 2d matrix representation of the grid
+        self.strip = strip  # LED strip object from NeoPixel
+        self.center = center  # Position of the sensor
+
+        # Software data structures
+        self.LEDS_on = []  # LEDS that are on, tuples form: (n_led, r, g, b)
+        # State stream of led on
+        self.states = Stream(data=[self.LEDS_on], l_max=3)
+        # Hash table: n_led -> position AND position -> n_led
+        self.hash_n_pos, self.hash_pos_n = self.gen_hashes()
+        self.radial_progression = self.gen_radial_progression()
+
+        # Free memory
+        del self.grid
+
+    def remove_LED(self, n_led):
+        '''
+        Remove the led from the leds_on structure and update the state
+        '''
+        # We delete it from the LEDS on
+        self.LEDS_on = [led for led in self.LEDS_on if led[0] != n_led]
+
+        # We clear the led color if its valid
+        pos = self.hash_n_pos.get(n_led)
+        if pos:
+            self.set_state_element_by_pos(*pos, (0, 0, 0))
+
+    def clear_LEDS(self):
+        '''
+        Clears all leds colors
+        '''
+        for led in self.LEDS_on:
+            self.remove_LED(led[0])
 
     def gen_state_grid(self):
-        state = []
+        '''
+        ** UNFINISHED
+        *  LOW PRIORITY
+        Generates a matrix representation of the actual grid state
+
+        Todo: Match the real color
+        '''
+
+        state = self.states[-1]
 
         for row in self.grid:
             state_row = []
@@ -26,9 +63,168 @@ class Grid:
             state.append(state_row)
         return state
 
-    # Returns a list of the equal radial leds
-    def radial_progression(self):
+    def gen_hashes(self):
+        '''
+        Creates the following hash tables:
+            - n_led -> position
+            - position -> n_led
+        '''
+        hash_n_pos, hash_pos_n = {}, {}
+
+        for i_row, row in enumerate(self.grid):
+            for i_col, elem in enumerate(row):
+                if elem != 0:
+                    hash_n_pos[elem] = (i_col, i_row)
+                    hash_pos_n[(i_col, i_row)] = elem
+        return hash_n_pos, hash_pos_n
+
+    def get_state_element_by_pos(self, coord_x, coord_y):
+        '''
+        Get the state of the a led by the position in the grid
+        '''
+        n_led = self.hash_pos_n.get((coord_x, coord_y))  # Getting the n_led
+        if n_led is None:
+            return
+        state = [elem for elem in self.states[-1] if elem[0] == n_led]
+        if state:
+            return state[0]
+
+    def get_state_element_by_num(self, n_led):
+        '''
+        Get the state of the a led by its number
+        '''
+        state = [elem for elem in self.states[-1] if elem[0] == n_led]
+        if state:
+            return state[0]
+
+    def set_state_element_by_pos(self, coord_x, coord_y, color):
+        '''
+        Change the state of the a led by the position in the grid
+        '''
+        n_led = self.hash_pos_n.get((coord_x, coord_y))  # Getting the n_led
+
+        if n_led is None:
+            return
+
+        # We search if the led was on
+        state = [elem for elem in self.states[-1] if elem[0] == n_led]
+
+        # If its on, we overwrite the color
+        if state:
+            new_state = self.states[-1].copy()
+
+            for indx, elem in enumerate(new_state):
+                if n_led == elem[0]:
+                    new_state[indx] = (n_led, *color)
+
+        # If the led was off, we turn it on
+        else:
+            new_state = self.states[-1].copy()
+            led_object = (n_led, *color)
+
+            if color != (0, 0, 0):
+                new_state.append(led_object)
+
+            else:
+                self.remove_LED(led_object)
+
+        # We modify the color of the strip
+        self.strip[n_led] = color
+
+        # Lastly we append the new state
+        self.states.append(new_state)
+
+    def set_state_element_by_num(self, n_led, color):
+        '''
+        Change the state of the a led by its number
+        '''
+
+        # We search if the led was on
+        state = [elem for elem in self.states[-1] if elem[0] == n_led]
+
+        # If its on, we overwrite the color
+        if state:
+            new_state = self.states[-1].copy()
+
+            for indx, elem in enumerate(new_state):
+                if n_led == elem[0]:
+                    new_state[indx] = (n_led, *color)
+
+        # If the led was off, we turn it on
+        else:
+            new_state = self.states[-1].copy()
+            led_object = (n_led, *color)
+
+            if color != (0, 0, 0):
+                new_state.append(led_object)
+
+            else:
+                self.remove_LED(led_object)
+
+        # We modify the color of the strip
+        self.strip[n_led] = color
+
+        # Lastly we append the new state
+        self.states.append(new_state)
+
+    def set_state_elements_by_pos(self, elems):
+        '''
+        Change the state of multiple led by the position in the grid
+        elems must be an iterable object and its elements must be of the form:
+            (n_led, r, g, b)
+        '''
         pass
+
+    def gen_radial_progression(self):
+        '''
+        from
+        https://www.geeksforgeeks.org/print-a-given-matrix-in-spiral-form/
+        '''
+        m, n = self.shape()
+        k = 0
+        le = 0
+
+        radial_items = []
+
+        while (k < m and le < n):
+            items = []
+            # Print the first row from
+            # the remaining rows
+            for i in range(le, n):
+                if self.grid[k][i] != 0:
+                    items.append(self.grid[k][i])
+            k += 1
+
+            for i in range(k, m):
+                if self.grid[i][n - 1] != 0:
+                    items.append(self.grid[i][n - 1])
+            n -= 1
+
+            # Print the last row from
+            # the remaining rows
+            if (k < m):
+                for i in range(n - 1, (le - 1), -1):
+                    if self.grid[m - 1][i] != 0:
+                        items.append(self.grid[m - 1][i])
+
+                m -= 1
+
+            # Print the first column from
+            # the remaining columns
+            if (le < n):
+                for i in range(m - 1, k - 1, -1):
+                    if self.grid[i][le] != 0:
+                        items.append(self.grid[i][le])
+
+                le += 1
+
+            if items:
+                radial_items.append(items)
+
+        return radial_items
+
+    def shape(self):
+        return (len(self.grid), len(self.grid[0]))
 
 
 class Stream:
@@ -59,6 +255,9 @@ class Stream:
             return sorted_data[len(self) // 2]
         else:
             return 0
+
+    def __getitem__(self, item):
+        return self.data[item]
 
     def __len__(self):  # Retorna el largo
         return len(self.data)
