@@ -1,6 +1,6 @@
 
-from utils.utils import matrix_save, matrix_read, leds_left
-from utils.data_structures import Grid, Stream
+from lib.utils import matrix_save, matrix_read, leds_left
+from lib.data_structures import Grid, Stream
 import json
 
 import sys

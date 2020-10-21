@@ -1,6 +1,6 @@
 
-from utils.utils import matrix_read
-from utils.data_structures import Grid, Stream
+from lib.utils import matrix_read
+from lib.data_structures import Grid, Stream
 
 import sys
 

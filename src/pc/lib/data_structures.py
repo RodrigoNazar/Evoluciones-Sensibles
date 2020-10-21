@@ -28,7 +28,7 @@ class Grid:
         # We clear the led color if its valid
         pos = self.hash_n_pos.get(n_led)
         if pos:
-            self.set_state_element_by_pos(*pos, (0, 0, 0))
+            self.set_state_element_by_pos(pos[0], pos[1], (0, 0, 0))
 
     def clear_LEDS(self):
         '''
@@ -115,12 +115,12 @@ class Grid:
 
             for indx, elem in enumerate(new_state):
                 if n_led == elem[0]:
-                    new_state[indx] = (n_led, *color)
+                    new_state[indx] = (n_led, color[0], color[1], color[2])
 
         # If the led was off, we turn it on
         else:
             new_state = self.states[-1].copy()
-            led_object = (n_led, *color)
+            led_object = (n_led, color[0], color[1], color[2])
 
             if color != (0, 0, 0):
                 new_state.append(led_object)
@@ -148,12 +148,12 @@ class Grid:
 
             for indx, elem in enumerate(new_state):
                 if n_led == elem[0]:
-                    new_state[indx] = (n_led, *color)
+                    new_state[indx] = (n_led, color[0], color[1], color[2])
 
         # If the led was off, we turn it on
         else:
             new_state = self.states[-1].copy()
-            led_object = (n_led, *color)
+            led_object = (n_led, color[0], color[1], color[2])
 
             if color != (0, 0, 0):
                 new_state.append(led_object)

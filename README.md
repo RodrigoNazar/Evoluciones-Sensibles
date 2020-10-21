@@ -17,6 +17,8 @@ Pontificia Universidad Católica de Chile, Escuela de Diseño, 2020.
 
 * *ESP32 firmware*: https://micropython.org/download/esp32/
 
+* *Ampy documentation and usage*: https://cdn-learn.adafruit.com/downloads/pdf/micropython-basics-load-files-and-run-code.pdf
+
 
 ## Useful Commands
 
@@ -38,6 +40,32 @@ esptool.py -p /dev/ttyUSB0 erase_flash
 esptool.py --chip esp32 --port /dev/ttyUSB0 write_flash -z 0x1000 firmware/esp32-idf3-20200902-v1.13.bin
 ampy --port /dev/ttyUSB0 ls
 ```
+
+The final return of this routine should be
+
+```
+/boot.py
+```
+
+* Quick project upload to board:
+
+```
+ampy --port /dev/ttyUSB0 mkdir grid
+ampy --port /dev/ttyUSB0 put Grid.txt grid/Grid.txt
+ampy --port /dev/ttyUSB0 put src/board/lib
+ampy --port /dev/ttyUSB0 put src/board/main.py
+ampy --port /dev/ttyUSB0 ls
+```
+
+The final return of this routine should be
+
+```
+/boot.py
+/grid
+/lib
+/main.py
+```
+
 
 ## To Do
 
