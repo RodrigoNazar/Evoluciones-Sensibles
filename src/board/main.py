@@ -1,7 +1,6 @@
 
-from utils.utils import matrix_save, matrix_read, leds_left
+from utils.utils import matrix_read
 from utils.data_structures import Grid, Stream
-import json
 
 import sys
 
@@ -27,25 +26,6 @@ def get_size(obj, seen=None):
     elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
         size += sum([get_size(i, seen) for i in obj])
     return size
-
-
-def matrix_save_test():
-
-    test = [[i for i in range(10)] for _ in range(10)]
-
-    matrix_save(test, 'Grid.txt')
-
-    with open('Grid.txt', 'r') as file:
-        a = json.load(file)
-
-    print(a, type(a), len(a))
-
-
-def leds_left_here():
-
-    DONE_LEDS = [100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87]
-
-    leds_left(DONE_LEDS)
 
 
 def grid_test(path, debug=False):
@@ -113,7 +93,5 @@ def stream_test():
 
 
 if __name__ == '__main__':
-    # matrix_save_test()
-    # leds_left_here()
     grid_test('grid/Grid.txt')
     # stream_test()

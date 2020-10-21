@@ -9,6 +9,6 @@ def matrix_read(path):
                 row = row.split(' ')
                 row = row[1:-2]
                 row = [int(i) for i in row
-                           if i != '' and i != '[' and i != ']']
+                       if i != '' and i != '[' and i != ']']
                 data.append(row)
     return data
