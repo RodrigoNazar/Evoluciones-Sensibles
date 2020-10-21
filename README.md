@@ -35,7 +35,7 @@ Pontificia Universidad Católica de Chile, Escuela de Diseño, 2020.
 
 ## Quick Routines
 
-* Quick board reflash:
+* **Quick board reflash**:
 
 ```
 esptool.py -p /dev/ttyUSB0 erase_flash
@@ -49,7 +49,7 @@ The final return of this routine should be
 /boot.py
 ```
 
-* Quick project upload to board:
+* **Quick project upload to board**:
 
 ```
 ampy --port /dev/ttyUSB0 mkdir grid
@@ -67,6 +67,8 @@ The final return of this routine should be
 /lib
 /main.py
 ```
+
+**Important**: This routine does not overwrite files of the lib directory that have been already uploaded.
 
 
 ## To Do
