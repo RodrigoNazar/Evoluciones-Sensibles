@@ -3,8 +3,7 @@ Source code of **Lucía Rosselot**'s project: ```Evoluciones Sensibles```.
 
 Pontificia Universidad Católica de Chile, Escuela de Diseño, 2020.
 
-<img src="img/evol.jpg" alt="drawing" width="300"/>
-<img src="img/Grid.png" alt="drawing" width="330"/>
+<img src="img/evol.jpg" alt="drawing" width="250"/> <img src="img/Grid.png" alt="drawing" width="250"/>
 
 ## Core Resources
 
