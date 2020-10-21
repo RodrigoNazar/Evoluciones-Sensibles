@@ -28,6 +28,8 @@ Pontificia Universidad Católica de Chile, Escuela de Diseño, 2020.
 
 * ampy --port /dev/ttyUSB0 ls
 
+* ampy --port /dev/ttyUSB0 get boot.py
+
 * cu -l /dev/ttyUSB0 -s 115200
     ~.
 
