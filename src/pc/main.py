@@ -1,5 +1,6 @@
 
 from utils.utils import matrix_save, matrix_read, leds_left
+from utils.data_structures import Grid
 import json
 import numpy as np
 
@@ -29,7 +30,28 @@ def leds_left_here():
     leds_left(DONE_LEDS)
 
 
+def grid_test():
+    grid = matrix_read('Grid.txt')
+
+    grid = Grid(grid)
+
+    print(len(grid.state), len(grid.state[0]))
+
+    print(grid.get_state_element(30, 4))
+    print(grid.get_state_element(*grid.center))
+    print(grid.pos_hash[2])
+    print(grid.shape())
+
+    print('progression')
+
+    grid.gen_radial_progression()
+
+    # for i in grid.state:
+    #     print(type(i))
+
+
 if __name__ == '__main__':
     # matrix_save_test()
-    matrix_read_test()
+    # matrix_read_test()
     # leds_left_here()
+    grid_test()

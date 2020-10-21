@@ -33,13 +33,12 @@ def matrix_read(path):
         data = []
         for line in file:
             if line != '[\n' and line != ']\n' and line != '\n':
-                # row = []
-                process = ''.join(line.split(','))
-                process = process.split(' ')
-                process = process[1:-2]
-                process = [i for i in process
-                           if i != '' and i != '[' and i != ']']
-                data.append(process)
+                row = ''.join(line.split(','))
+                row = row.split(' ')
+                row = row[1:-2]
+                row = [int(i) for i in row
+                       if i != '' and i != '[' and i != ']']
+                data.append(row)
     return data
 
 
