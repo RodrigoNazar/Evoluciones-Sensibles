@@ -80,11 +80,13 @@ def grid_test(debug=False):
     # setter and getter of elements and values in strip
     print('antes', grid.get_state_element_by_pos(30, 4))
     print('stream', grid.states)
+
     # LED 98
     print('LED 98')
     print('seteando...', grid.set_state_element_by_pos(30, 4, (255, 255, 255)))
     print('despues', grid.get_state_element_by_pos(30, 4))
     print('stream', grid.states)
+
     # LED 39
     print('LED 39')
     print('seteando...', grid.set_state_element_by_pos(26, 39, (255, 255, 255)))
@@ -93,8 +95,14 @@ def grid_test(debug=False):
 
     # LED 39 -- again
     print('LED 39 -- again')
-    print('seteando...', grid.set_state_element_by_pos(26, 39, (0, 230, 120)))
+    print('seteando...', grid.set_state_element_by_num(39, (0, 230, 120)))
     print('despues', grid.get_state_element_by_pos(26, 39))
+    print('stream', grid.states)
+
+    # LED 21
+    print('LED 21')
+    print('seteando...', grid.set_state_element_by_num(21, (0, 230, 120)))
+    print('despues', grid.get_state_element_by_num(21))
     print('stream', grid.states)
 
     print('grid object size', get_size(grid))

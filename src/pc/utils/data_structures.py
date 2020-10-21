@@ -79,6 +79,9 @@ class Grid:
         return hash_n_pos, hash_pos_n
 
     def get_state_element_by_pos(self, coord_x, coord_y):
+        '''
+        Get the state of the a led by the position in the grid
+        '''
         n_led = self.hash_pos_n.get((coord_x, coord_y))  # Getting the n_led
         if n_led is None:
             return
@@ -86,9 +89,17 @@ class Grid:
         if state:
             return state[0]
 
+    def get_state_element_by_num(self, n_led):
+        '''
+        Get the state of the a led by its number
+        '''
+        state = [elem for elem in self.states[-1] if elem[0] == n_led]
+        if state:
+            return state[0]
+
     def set_state_element_by_pos(self, coord_x, coord_y, color):
         '''
-        Cambiar a que utilice los elementos de la lista de leds prendidos
+        Change the state of the a led by the position in the grid
         '''
         n_led = self.hash_pos_n.get((coord_x, coord_y))  # Getting the n_led
 
@@ -117,14 +128,50 @@ class Grid:
             else:
                 self.remove_LED(led_object)
 
-            # We modify the color of the strip
-            self.strip[n_led] = color
+        # We modify the color of the strip
+        self.strip[n_led] = color
 
+        # Lastly we append the new state
         self.states.append(new_state)
 
-    def set_state_elements(self, elems):
+    def set_state_element_by_num(self, n_led, color):
         '''
-        Developing
+        Change the state of the a led by its number
+        '''
+
+        # We search if the led was on
+        state = [elem for elem in self.states[-1] if elem[0] == n_led]
+
+        # If its on, we overwrite the color
+        if state:
+            new_state = self.states[-1].copy()
+
+            for indx, elem in enumerate(new_state):
+                if n_led == elem[0]:
+                    new_state[indx] = (n_led, *color)
+
+        # If the led was off, we turn it on
+        else:
+            new_state = self.states[-1].copy()
+            led_object = (n_led, *color)
+
+            if color != (0, 0, 0):
+                new_state.append(led_object)
+
+            else:
+                self.remove_LED(led_object)
+
+        # We modify the color of the strip
+        self.strip[n_led] = color
+
+        # Lastly we append the new state
+        self.states.append(new_state)
+
+    def set_state_elements_by_pos(self, elems):
+        '''
+        Change the state of multiple led by the position in the grid
+        elems must be an iterable object and its elements must be of the form:
+            (n_led, r, g, b)
         '''
         pass
 

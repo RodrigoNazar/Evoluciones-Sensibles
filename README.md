@@ -30,3 +30,8 @@ Código fuente del proyecto de Evoluciones Sensibles de Lucía Rosselot, Diseño
 
 
 ## To Do
+
+
+## Improvements:
+
+* Addition of args handling in ```set_state_element_by_num``` and ```set_state_element_by_pos``` methods in order to decrease the  ``data_structures.py`` module length.
