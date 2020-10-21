@@ -1,8 +1,34 @@
 
 from utils.utils import matrix_save, matrix_read, leds_left
-from utils.data_structures import Grid
+from utils.data_structures import Grid, Stream
 import json
 import numpy as np
+
+
+import sys
+
+
+def get_size(obj, seen=None):
+    """Recursively finds size of objects
+    from https://goshippo.com/blog/measure-real-size-any-python-object/
+    """
+    size = sys.getsizeof(obj)
+    if seen is None:
+        seen = set()
+    obj_id = id(obj)
+    if obj_id in seen:
+        return 0
+    # Important mark as seen *before* entering recursion to gracefully handle
+    # self-referential objects
+    seen.add(obj_id)
+    if isinstance(obj, dict):
+        size += sum([get_size(v, seen) for v in obj.values()])
+        size += sum([get_size(k, seen) for k in obj.keys()])
+    elif hasattr(obj, '__dict__'):
+        size += get_size(obj.__dict__, seen)
+    elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
+        size += sum([get_size(i, seen) for i in obj])
+    return size
 
 
 def matrix_save_test():
@@ -30,24 +56,47 @@ def leds_left_here():
     leds_left(DONE_LEDS)
 
 
-def grid_test():
+def grid_test(debug=False):
     grid = matrix_read('Grid.txt')
 
-    grid = Grid(grid)
+    grid = Grid(grid, strip=[])
 
-    print(len(grid.state), len(grid.state[0]))
+    if debug:
 
-    print(grid.get_state_element(30, 4))
-    print(grid.get_state_element(*grid.center))
-    print(grid.pos_hash[2])
-    print(grid.shape())
+        print(len(grid.state), len(grid.state[0]))
 
-    print('progression')
+        print(grid.get_state_element(30, 4))
+        print(grid.get_state_element(*grid.center))
+        print(grid.pos_hash[2])
+        print(grid.shape())
 
-    grid.gen_radial_progression()
+        print('progression')
 
-    # for i in grid.state:
-    #     print(type(i))
+        grid.gen_radial_progression()
+
+        for i in grid.state:
+            print(type(i))
+
+    # setter and getter of elements and values in strip
+    print('antes', grid.get_state_element(30, 4))
+    print('stream', len(grid.states))
+    print('seteando...', grid.set_state_element(30, 4, (255, 255, 255)))
+    print('despues', grid.get_state_element(30, 4))
+    print('stream', len(grid.states))
+
+    print('grid object size', get_size(grid))
+
+
+def stream_test():
+    data = [i for i in range(16)]
+
+    stream = Stream()
+
+    for i in data:
+        stream.append(i)
+
+    print(stream)
+    print(stream[3])
 
 
 if __name__ == '__main__':
@@ -55,3 +104,4 @@ if __name__ == '__main__':
     # matrix_read_test()
     # leds_left_here()
     grid_test()
+    # stream_test()

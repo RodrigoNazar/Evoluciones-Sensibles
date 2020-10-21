@@ -1,7 +1,7 @@
 import _thread as th
 from machine import Pin, PWM
 from lib.hcsr04 import HCSR04
-from lib.stream import Stream
+from lib.data_structures import Stream
 from lib.routines import senser, lighter
 
 
