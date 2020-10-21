@@ -1,2 +1,3 @@
 adafruit-ampy
 esptool
+numpy
