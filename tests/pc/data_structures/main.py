@@ -69,32 +69,44 @@ def grid_test(path, debug=False):
         for i in grid.state:
             print(type(i))
 
-    # setter and getter of elements and values in strip
-    print('antes', grid.get_state_element_by_pos(30, 4))
+        # setter and getter of elements and values in strip
+        print('antes', grid.get_state_element_by_pos(30, 4))
+        print('stream', grid.states)
+
+        # LED 98
+        print('LED 98')
+        print('seteando...', grid.set_state_element_by_pos(30, 4, (255, 255, 255)))
+        print('despues', grid.get_state_element_by_pos(30, 4))
+        print('stream', grid.states)
+
+        # LED 39
+        print('LED 39')
+        print('seteando...', grid.set_state_element_by_pos(26, 39, (255, 255, 255)))
+        print('despues', grid.get_state_element_by_pos(26, 39))
+        print('stream', grid.states)
+
+        # LED 39 -- again
+        print('LED 39 -- again')
+        print('seteando...', grid.set_state_element_by_num(39, (0, 230, 120)))
+        print('despues', grid.get_state_element_by_pos(26, 39))
+        print('stream', grid.states)
+
+        # LED 21
+        print('LED 21')
+        print('seteando...', grid.set_state_element_by_num(21, (0, 230, 120)))
+        print('despues', grid.get_state_element_by_num(21))
+        print('stream', grid.states)
+
+    # Changes
+    changes = ((i, 1, 2, 3) for i in range(1, 4))
+    print('Changes 1')
+    print('stream antes', grid.states)
+    print('seteando...', grid.set_state_elements_by_num(changes))
     print('stream', grid.states)
 
-    # LED 98
-    print('LED 98')
-    print('seteando...', grid.set_state_element_by_pos(30, 4, (255, 255, 255)))
-    print('despues', grid.get_state_element_by_pos(30, 4))
-    print('stream', grid.states)
-
-    # LED 39
-    print('LED 39')
-    print('seteando...', grid.set_state_element_by_pos(26, 39, (255, 255, 255)))
-    print('despues', grid.get_state_element_by_pos(26, 39))
-    print('stream', grid.states)
-
-    # LED 39 -- again
-    print('LED 39 -- again')
-    print('seteando...', grid.set_state_element_by_num(39, (0, 230, 120)))
-    print('despues', grid.get_state_element_by_pos(26, 39))
-    print('stream', grid.states)
-
-    # LED 21
-    print('LED 21')
-    print('seteando...', grid.set_state_element_by_num(21, (0, 230, 120)))
-    print('despues', grid.get_state_element_by_num(21))
+    changes = ((i, 20, 20, 3) for i in range(1, 15))
+    print('Changes 2')
+    print('seteando...', grid.set_state_elements_by_num(changes))
     print('stream', grid.states)
 
     print('grid object size', get_size(grid))
@@ -115,5 +127,5 @@ def stream_test():
 if __name__ == '__main__':
     # matrix_save_test()
     # leds_left_here()
-    grid_test('Grid.txt')
+    grid_test('grid/Grid.txt')
     # stream_test()

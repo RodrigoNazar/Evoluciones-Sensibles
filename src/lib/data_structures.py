@@ -167,13 +167,42 @@ class Grid:
         # Lastly we append the new state
         self.states.append(new_state)
 
-    def set_state_elements_by_pos(self, elems):
+    def set_state_elements_by_num(self, elems):
         '''
         Change the state of multiple led by the position in the grid
         elems must be an iterable object and its elements must be of the form:
             (n_led, r, g, b)
         '''
-        pass
+        # We create a new state
+        new_state = self.states[-1].copy()
+
+        for new_elem in elems:
+
+            n_led = new_elem[0]
+            color = new_elem[1:]
+
+            # We search if the led was on
+            state = [i for i in new_state if i[0] == n_led]
+
+            # If its on, we overwrite the color
+            if state:
+                for indx, elem in enumerate(new_state):
+                    if n_led == elem[0]:
+                        new_state[indx] = new_elem
+
+            # If the led was off, we turn it on
+            else:
+                if color != (0, 0, 0):
+                    new_state.append(new_elem)
+
+                else:
+                    self.remove_LED(new_elem)
+
+            # We modify the color of the strip
+            self.strip[n_led] = color
+
+        # Lastly we append the new state
+        self.states.append(new_state)
 
     def gen_radial_progression(self):
         '''
