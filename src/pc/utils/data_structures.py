@@ -12,7 +12,7 @@ class Grid:
         # State stream of led on
         self.states = Stream(data=[self.LEDS_on], l_max=3)
         # Hash table: n_led -> position AND position -> n_led
-        self.hash_n_pos, self.hash_pos_n = self.gen_pos_hash()
+        self.hash_n_pos, self.hash_pos_n = self.gen_hashes()
         self.radial_progression = self.gen_radial_progression()
 
         # Free memory
@@ -28,15 +28,19 @@ class Grid:
         # We clear the led color if its valid
         pos = self.hash_n_pos.get(n_led)
         if pos:
-            self.set_state_element(*pos, (0, 0, 0))
+            self.set_state_element_by_pos(*pos, (0, 0, 0))
 
     def clear_LEDS(self):
+        '''
+        Clears all leds colors
+        '''
         for led in self.LEDS_on:
-            self.LEDS_on.remove(led)
+            self.remove_LED(led[0])
 
     def gen_state_grid(self):
         '''
         ** UNFINISHED
+        *  LOW PRIORITY
         Generates a matrix representation of the actual grid state
 
         Todo: Match the real color
@@ -59,7 +63,12 @@ class Grid:
             state.append(state_row)
         return state
 
-    def gen_pos_hash(self):
+    def gen_hashes(self):
+        '''
+        Creates the following hash tables:
+            - n_led -> position
+            - position -> n_led
+        '''
         hash_n_pos, hash_pos_n = {}, {}
 
         for i_row, row in enumerate(self.grid):
@@ -69,7 +78,7 @@ class Grid:
                     hash_pos_n[(i_col, i_row)] = elem
         return hash_n_pos, hash_pos_n
 
-    def get_state_element(self, coord_x, coord_y):
+    def get_state_element_by_pos(self, coord_x, coord_y):
         n_led = self.hash_pos_n.get((coord_x, coord_y))  # Getting the n_led
         if n_led is None:
             return
@@ -77,7 +86,7 @@ class Grid:
         if state:
             return state[0]
 
-    def set_state_element(self, coord_x, coord_y, color):
+    def set_state_element_by_pos(self, coord_x, coord_y, color):
         '''
         Cambiar a que utilice los elementos de la lista de leds prendidos
         '''
@@ -89,46 +98,31 @@ class Grid:
         # We search if the led was on
         state = [elem for elem in self.states[-1] if elem[0] == n_led]
 
-        print('\nStart set state element debug')
+        # print('\nStart set state element debug')
 
-        print(self.states)
+        # print(self.states)
 
         # If its on, we overwrite the color
         if state:
             new_state = self.states[-1].copy()
 
+        # If the led was off, we turn it on
         else:
+            new_state = self.states[-1].copy()
             led_object = (n_led, *color)
 
             if color != (0, 0, 0):
-                self.LEDS_on.append(led_object)
+                new_state.append(led_object)
 
             else:
                 self.remove_LED(led_object)
 
             # We modify the color of the strip
             self.strip[n_led] = color
-            print(n_led)
-            print(coord_x, coord_y)
-            print(self.hash_pos_n)
 
+        self.states.append(new_state)
 
-        # # We overwrite the color
-        # if isinstance(hash, dict):
-        #     state[coord_y][coord_x]['color'] = color
-        #
-        #     # If the color is != than none
-        #     if color != (0, 0, 0):
-        #         self.LEDS_on.append((state[coord_y][coord_x]['n'], *color))
-        #
-        #     # If we turn off the led, we delete it
-        #     else:
-        #         self.remove_LED(state[coord_y][coord_x]['n'])
-        #
-        #     self.states.append(state)
-
-        print('Stop set state element debug\n')
-
+        # print('Stop set state element debug\n')
 
     def set_state_elements(self, elems):
         '''
