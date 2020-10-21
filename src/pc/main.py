@@ -59,7 +59,7 @@ def leds_left_here():
 def grid_test(debug=False):
     grid = matrix_read('Grid.txt')
 
-    grid = Grid(grid, strip=[])
+    grid = Grid(grid, strip=[i for i in range(1, 101)])
 
     if debug:
 
