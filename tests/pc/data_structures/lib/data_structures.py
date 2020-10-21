@@ -1,4 +1,6 @@
 
+import time
+
 
 class Grid:
     def __init__(self, grid, strip, center=(23, 27)):
@@ -17,6 +19,9 @@ class Grid:
 
         # Free memory
         del self.grid
+
+    def last_state(self):
+        return self.states[-1]
 
     def remove_LED(self, n_led):
         '''
@@ -250,7 +255,45 @@ class Grid:
             if items:
                 radial_items.append(items)
 
+        radial_items.reverse()
         return radial_items
+
+    def state_transition(self, period, iterations=10):
+        '''
+        Transition from the previous to the actual grid state in $period seconds
+        '''
+        actual_state = self.last_state()
+        actual_leds_on = [i[0] for i in actual_state]
+
+        if len(self.states) >= 2:
+            previous_state = self.states[-2]
+        else:
+            previous_state = []
+        leds_turned_off = [i for i in previous_state
+                           if i[0] not in actual_leds_on]
+
+        for it in range(iterations):
+            for led in actual_state:
+                n_led = led[0]
+                r, g, b = led[1:]
+                r = r * it / iterations
+                g = g * it / iterations
+                b = b * it / iterations
+
+                self.strip[n_led] = (r, g, b)
+
+            for led in leds_turned_off:
+                n_led = led[0]
+                r, g, b = led[1:]
+                r = r * (iterations - it) / iterations
+                g = g * (iterations - it) / iterations
+                b = b * (iterations - it) / iterations
+
+                self.strip[n_led] = (r, g, b)
+
+            time.sleep(period / iterations)
+
+            self.strip.write()
 
     def shape(self):
         return (len(self.grid), len(self.grid[0]))

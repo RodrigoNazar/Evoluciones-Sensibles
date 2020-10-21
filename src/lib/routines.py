@@ -1,47 +1,104 @@
 import time
+import random
 
 
-def senser(sensor, stream):
+def senser(sensor, sensor_stream, w_time=.1):
+    '''
+    Distance sensor thread routine
+    '''
     while 1:
-        new_val = sensor.distance_cm()  # Obtiene el valor del sensor
-        stream.append(new_val)
+        # We get the value from the sensor
+        new_val = sensor.distance_cm()
+        # Append it to the stream
+        sensor_stream.append(new_val)
+        # Wait some time
+        time.sleep(w_time)
 
-        # print(f'\tMido en el sensor {new_val} cm...')
-        time.sleep(TIME)
 
-
-def lighter(leds, stream, n_leds=100, debug=False):
-    # prev_mean = 50
-    prev_median = 50
-
-    base_duty = 512
+def lighter(grid, sensor_stream, debug=False):
+    prev_median = 200
 
     while 1:
-        # actual_mean = stream.get_mean()
-        actual_median = stream.get_median()
+        dist = sensor_stream.get_median()
+        vel = dist - prev_median
 
-        # vel_mean = actual_mean - prev_mean
-        vel_median = actual_median - prev_median
+        if debug:
+            print('\nEl sensor_stream es', sensor_stream)
+            print('La distancia sensada es', dist)
+            print('La velocidad del objeto es:', vel)
 
-        print('\nEl stream es', stream)
-        # print(f'La media sensada es {actual_mean}')
-        print('La mediana 'alejo'sensada es', actual_median)  # N // 2 muestras para el trigger
-        # print(f'La velocidad del objeto en media es: {vel_mean}')
-        print('La velocidad del objeto en mediana es:', vel_median)
+        # Logic of the light system
 
-        # if vel_median > -20 and actual_median > 30:
-        #     print('Se acercó el objeto rápidamente, pero está lejos')
+        # Podría ser sólo un if que reaccione frente a la velocidad
+        # Y calcula parámetros en función de la distancia
+        if dist > 60 and vel < 5:
+            random_blink(grid, period=.3, intensity=.40)
 
-        # if abs(actual_median) > 0:
+        elif dist < 60 and vel < 5:
+            random_blink(grid, period=.15, intensity=.80)
+
+        elif 5 < vel and vel < 15:
+            center_wave(grid, period=.15, intensity=.80)
+
+        elif -5 > vel and vel > -15:
+            reverse_center_wave(grid, period=.15, intensity=.80)
+
+        # Data for the computation of the velocity
+        prev_median = dist
 
 
-        for i in range(2):
-            leds[i].duty(base_duty - int(abs(actual_median))*10)
+def center_wave(grid, period, intensity):
+    progression = grid.radial_progression
 
-        # for i in range(2, 4):
-        #     leds[i].duty(base_duty - int(abs(vel_median))*14)
+    for leds in progression:
+        new_state = []
 
-        # prev_mean = actual_mean
-        prev_median = actual_median
+        for led in leds:
+            color = int(255 * intensity)
+            led_object = (led, color, color, color)
+            new_state.append(led_object)
 
-        time.sleep(TIME)
+        grid.set_state_elements_by_num(new_state)
+        grid.state_transition(period)
+
+
+def reverse_center_wave(grid, period, intensity):
+    progression = grid.radial_progression
+    progression.reverse()
+
+    for leds in progression:
+        new_state = []
+
+        for led in leds:
+            color = int(255 * intensity)
+            led_object = (led, color, color, color)
+            new_state.append(led_object)
+
+        grid.set_state_elements_by_num(new_state)
+        grid.state_transition(period)
+
+
+def random_blink(grid, period, intensity, prob=.5):
+
+    new_state = grid.last_state().copy()
+
+    # Led deletion phase
+    for led in grid.last_state():
+        # With a probability of prob, we turn off the led
+        if random.randint(0, 10) / 10 < prob:
+            new_state.remove(led)
+
+    # Led incorporation phase
+    new_leds = [i[0] for i in new_state]
+    n_new_leds = random.randint(0, 2)
+
+    for i in range(n_new_leds):
+        new_led = random.randint(1, 100)
+
+        if new_led not in new_leds:
+            color = int(255 * intensity)
+            led_object = (new_led, color, color, color)
+            new_state.append(led_object)
+
+    grid.set_state_elements_by_num(new_state)
+    grid.state_transition(period)

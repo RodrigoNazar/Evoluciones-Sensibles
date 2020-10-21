@@ -53,6 +53,10 @@ def grid_test(path, debug=False):
 
     grid = Grid(grid, strip=[i for i in range(1, 101)])
 
+    print('progression')
+
+    print(grid.radial_progression)
+
     if debug:
 
         print(len(grid.state), len(grid.state[0]))
@@ -64,7 +68,7 @@ def grid_test(path, debug=False):
 
         print('progression')
 
-        grid.gen_radial_progression()
+        print(grid.radial_progression)
 
         for i in grid.state:
             print(type(i))
@@ -97,19 +101,20 @@ def grid_test(path, debug=False):
         print('despues', grid.get_state_element_by_num(21))
         print('stream', grid.states)
 
-    # Changes
-    changes = ((i, 1, 2, 3) for i in range(1, 4))
-    print('Changes 1')
-    print('stream antes', grid.states)
-    print('seteando...', grid.set_state_elements_by_num(changes))
-    print('stream', grid.states)
+        # Annother test
+        # Changes
+        changes = ((i, 1, 2, 3) for i in range(1, 4))
+        print('Changes 1')
+        print('stream antes', grid.states)
+        print('seteando...', grid.set_state_elements_by_num(changes))
+        print('stream', grid.states)
 
-    changes = ((i, 20, 20, 3) for i in range(1, 15))
-    print('Changes 2')
-    print('seteando...', grid.set_state_elements_by_num(changes))
-    print('stream', grid.states)
+        changes = ((i, 20, 20, 3) for i in range(1, 15))
+        print('Changes 2')
+        print('seteando...', grid.set_state_elements_by_num(changes))
+        print('stream', grid.states)
 
-    print('grid object size', get_size(grid))
+        print('grid object size', get_size(grid))
 
 
 def stream_test():
