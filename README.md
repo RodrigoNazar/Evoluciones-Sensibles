@@ -3,6 +3,9 @@ Source code of **Lucía Rosselot**'s project: ```Evoluciones Sensibles```.
 
 Pontificia Universidad Católica de Chile, Escuela de Diseño, 2020.
 
+<img src="img/evol.jpg" alt="drawing" width="300"/>
+<img src="img/Grid.png" alt="drawing" width="330"/>
+
 ## Core Resources
 
 * *Getting started with MicroPython on the ESP32*: https://docs.micropython.org/en/latest/esp32/tutorial/intro.html
@@ -77,3 +80,4 @@ The final return of this routine should be
 ## Improvements:
 
 * Addition of args handling in ```set_state_element_by_num``` and ```set_state_element_by_pos``` methods in order to decrease the  ``data_structures.py`` module length.
+> Maybe MicroPython does not handle args and kwargs
