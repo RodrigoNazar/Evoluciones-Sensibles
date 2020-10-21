@@ -29,6 +29,15 @@ Pontificia Universidad Católica de Chile, Escuela de Diseño, 2020.
 * cu -l /dev/ttyUSB0 -s 115200
     ~.
 
+## Quick Routines
+
+* Quick board reflash:
+
+```
+esptool.py -p /dev/ttyUSB0 erase_flash
+esptool.py --chip esp32 --port /dev/ttyUSB0 write_flash -z 0x1000 firmware/esp32-idf3-20200902-v1.13.bin
+ampy --port /dev/ttyUSB0 ls
+```
 
 ## To Do
 
