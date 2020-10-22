@@ -12,7 +12,7 @@ class Grid:
         # Software data structures
         self.LEDS_on = []  # LEDS that are on, tuples form: (n_led, r, g, b)
         # State stream of led on
-        self.states = Stream(data=[self.LEDS_on], l_max=3)
+        self.states = Stream(data=[self.LEDS_on], l_max=2)
         # Hash table: n_led -> position AND position -> n_led
         self.hash_n_pos, self.hash_pos_n = self.gen_hashes()
         self.radial_progression = self.gen_radial_progression()
@@ -20,8 +20,19 @@ class Grid:
         # Free memory
         del self.grid
 
+        # Clear the strip
+        self.clear_strip()
+
     def last_state(self):
-        return self.states[-1]
+        return self.states[-1].copy()
+
+    def clear_strip(self):
+        '''
+        * Made in a hurry
+        '''
+        for led in range(1, 100):
+            self.strip[led] = (0, 0, 0)
+            self.strip.write()
 
     def remove_LED(self, n_led):
         '''
@@ -29,11 +40,6 @@ class Grid:
         '''
         # We delete it from the LEDS on
         self.LEDS_on = [led for led in self.LEDS_on if led[0] != n_led]
-
-        # We clear the led color if its valid
-        pos = self.hash_n_pos.get(n_led)
-        if pos:
-            self.set_state_element_by_pos(pos[0], pos[1], (0, 0, 0))
 
     def clear_LEDS(self):
         '''
@@ -133,9 +139,6 @@ class Grid:
             else:
                 self.remove_LED(led_object)
 
-        # We modify the color of the strip
-        self.strip[n_led] = color
-
         # Lastly we append the new state
         self.states.append(new_state)
 
@@ -166,9 +169,6 @@ class Grid:
             else:
                 self.remove_LED(led_object)
 
-        # We modify the color of the strip
-        self.strip[n_led] = color
-
         # Lastly we append the new state
         self.states.append(new_state)
 
@@ -178,36 +178,8 @@ class Grid:
         elems must be an iterable object and its elements must be of the form:
             (n_led, r, g, b)
         '''
-        # We create a new state
-        new_state = self.states[-1].copy()
-
-        for new_elem in elems:
-
-            n_led = new_elem[0]
-            color = new_elem[1:]
-
-            # We search if the led was on
-            state = [i for i in new_state if i[0] == n_led]
-
-            # If its on, we overwrite the color
-            if state:
-                for indx, elem in enumerate(new_state):
-                    if n_led == elem[0]:
-                        new_state[indx] = new_elem
-
-            # If the led was off, we turn it on
-            else:
-                if color != (0, 0, 0):
-                    new_state.append(new_elem)
-
-                else:
-                    self.remove_LED(new_elem)
-
-            # We modify the color of the strip
-            self.strip[n_led] = color
-
         # Lastly we append the new state
-        self.states.append(new_state)
+        self.states.append(elems)
 
     def gen_radial_progression(self):
         '''
@@ -256,7 +228,17 @@ class Grid:
                 radial_items.append(items)
 
         radial_items.reverse()
-        return radial_items
+
+        # Optimize the progression
+        op_radial_items = []
+        current = []
+        for item in radial_items:
+            current += item
+            if len(current) > 10:
+                op_radial_items.append(current)
+                current = []
+
+        return op_radial_items
 
     def state_transition(self, period, iterations=10):
         '''
@@ -269,31 +251,56 @@ class Grid:
             previous_state = self.states[-2]
         else:
             previous_state = []
-        leds_turned_off = [i for i in previous_state
-                           if i[0] not in actual_leds_on]
+        prev_leds_on = [i[0] for i in previous_state]
+
+        # Leds that turn off
+        leds_turned_off = [i for i in prev_leds_on if i not in actual_leds_on]
+        leds_turned_off = [i for i in previous_state if i[0] in leds_turned_off]
+
+        # Leds that turn on
+        leds_turned_on = [i for i in actual_leds_on if i not in prev_leds_on]
+        leds_turned_on = [i for i in actual_state if i[0] in leds_turned_on]
 
         for it in range(iterations):
-            for led in actual_state:
+            for led in leds_turned_on:
                 n_led = led[0]
                 r, g, b = led[1:]
-                r = r * it / iterations
-                g = g * it / iterations
-                b = b * it / iterations
+                r = int(r * it / iterations)
+                g = int(g * it / iterations)
+                b = int(b * it / iterations)
 
-                self.strip[n_led] = (r, g, b)
+                r = r if r <= 255 else 255
+                g = g if g <= 255 else 255
+                b = b if b <= 255 else 255
+
+                if n_led <= 99:
+                    self.strip[n_led] = (r, g, b)
 
             for led in leds_turned_off:
                 n_led = led[0]
                 r, g, b = led[1:]
-                r = r * (iterations - it) / iterations
-                g = g * (iterations - it) / iterations
-                b = b * (iterations - it) / iterations
+                r = int(r * (iterations - it) / iterations)
+                g = int(g * (iterations - it) / iterations)
+                b = int(b * (iterations - it) / iterations)
 
-                self.strip[n_led] = (r, g, b)
+                r = r if r <= 255 else 255
+                g = g if g <= 255 else 255
+                b = b if b <= 255 else 255
+
+                if n_led <= 99:
+                    self.strip[n_led] = (r, g, b)
 
             time.sleep(period / iterations)
 
             self.strip.write()
+
+        # We make sure that all the leds turn off
+        for led in leds_turned_off:
+            n_led = led[0]
+
+            if n_led <= 99:
+                self.strip[n_led] = (0, 0, 0)
+                self.strip.write()
 
     def shape(self):
         return (len(self.grid), len(self.grid[0]))
