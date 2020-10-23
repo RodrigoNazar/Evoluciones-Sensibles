@@ -75,6 +75,8 @@ The final return of this routine should be
 
 ## To Do
 
+* Optimice and develop a lighter version of the code
+> Idealy work only with streams of states ands light transitions
 
 ## Improvements:
 
