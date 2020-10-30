@@ -238,7 +238,13 @@ class Grid:
                 op_radial_items.append(current)
                 current = []
 
-        return op_radial_items
+        radial_progression = ((i, i+j) for i, j in zip(op_radial_items, op_radial_items[1:]))
+        final_radial_progression = []
+        for elems in radial_progression:
+            final_radial_progression.append(elems[0])
+            final_radial_progression.append(elems[1])
+
+        return final_radial_progression
 
     def state_transition(self, period, iterations=10):
         '''

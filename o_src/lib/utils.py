@@ -46,7 +46,7 @@ def state_transition(states, strip, period=0, iterations=10):
                       if i not in prev_state_leds_on]
     leds_turned_on = [i for i in new_state if i[0] in leds_turned_on]
 
-    for it in range(iterations):
+    for it in range(1, iterations + 1):
         for led in leds_turned_on:
             n_led = led[0]
             r, g, b = led[1:]
@@ -54,9 +54,9 @@ def state_transition(states, strip, period=0, iterations=10):
             g = int(g * it / iterations)
             b = int(b * it / iterations)
 
-            r = r if r <= 255 else 255
-            g = g if g <= 255 else 255
-            b = b if b <= 255 else 255
+            r = r if r <= 255 and 0 <= r else 255
+            g = g if g <= 255 and 0 <= g else 255
+            b = b if b <= 255 and 0 <= b else 255
 
             if n_led <= 99:
                 strip[n_led] = (r, g, b)
@@ -68,9 +68,9 @@ def state_transition(states, strip, period=0, iterations=10):
             g = int(g * (iterations - it) / iterations)
             b = int(b * (iterations - it) / iterations)
 
-            r = r if r <= 255 else 255
-            g = g if g <= 255 else 255
-            b = b if b <= 255 else 255
+            r = r if r <= 255 and 0 <= r else 255
+            g = g if g <= 255 and 0 <= g else 255
+            b = b if b <= 255 and 0 <= b else 255
 
             if n_led <= 99:
                 strip[n_led] = (r, g, b)

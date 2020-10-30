@@ -34,7 +34,7 @@ def lighter(grid_states, strip, sensor_stream, debug=False):
         # Y calcula parámetros en función de la distancia
         if abs(vel) <= 50:
             # period = dist * .5 / 300
-            random_blink(grid_states, strip, period=.0, intensity=.5)
+            random_blink(grid_states, strip, period=.1, intensity=.5)
 
         elif 50 < vel and not first_loop:
             # print('Center wave1: dist', dist, 'vel', vel)
@@ -100,4 +100,4 @@ def random_blink(grid_states, strip, period, intensity, prob=.5):
             new_state.append(led_object)
 
     grid_states.append(new_state)
-    state_transition(grid_states, strip, period=period, iterations=15)
+    state_transition(grid_states, strip, period=period, iterations=5)

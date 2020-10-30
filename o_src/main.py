@@ -45,6 +45,8 @@ def main():
 
     print('\nStarting the routines threads...')
     # Starting the routines in threads
-    th.start_new_thread(senser, (sensor, sensor_stream))  # Senser thread
-    th.start_new_thread(lighter, (grid_states, strip, sensor_stream))  # Light thread
+    # Senser thread
+    th.start_new_thread(senser, (sensor, sensor_stream))
+    # Light thread
+    th.start_new_thread(lighter, (grid_states, strip, sensor_stream))
     print('Threads ready!')
