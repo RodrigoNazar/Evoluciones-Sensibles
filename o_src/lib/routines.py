@@ -18,7 +18,7 @@ def senser(sensor, sensor_stream, w_time=.1):
 
 def lighter(grid_states, strip, sensor_stream, debug=False):
     prev_dist = 150
-    first_loop = True
+    wave_debounce = True
     while 1:
         dist = sensor_stream.get_mean()
         vel = dist - prev_dist
@@ -34,21 +34,25 @@ def lighter(grid_states, strip, sensor_stream, debug=False):
         # Y calcula parámetros en función de la distancia
         if abs(vel) <= 50:
             # period = dist * .5 / 300
-            random_blink(grid_states, strip, period=.1, intensity=.5)
+            random_blink(grid_states, strip, period=.03, intensity=.5)
 
-        elif 50 < vel and not first_loop:
+        elif 50 < vel and not wave_debounce:
             # print('Center wave1: dist', dist, 'vel', vel)
             reverse_center_wave(grid_states, strip, period=.0, intensity=.80)
+            wave_debounce = True
+            sensor_stream.clean()
 
-        # elif -5 > vel and vel > -15:
-        elif -50 > vel and not first_loop:
+        elif -50 > vel and not wave_debounce:
             # print('Center wave2: dist', dist, 'vel', vel)
             center_wave(grid_states, strip, period=.0, intensity=.80)
+            wave_debounce = True
+            sensor_stream.clean()
 
         # Data for the computation of the velocity
         prev_dist = dist
-        if first_loop and len(sensor_stream) == sensor_stream.l_max:
-            first_loop = False
+        if wave_debounce and len(sensor_stream) > 6:
+            sensor_stream.clean()
+            wave_debounce = False
 
 
 def center_wave(grid_states, strip, period, intensity):
@@ -100,4 +104,4 @@ def random_blink(grid_states, strip, period, intensity, prob=.5):
             new_state.append(led_object)
 
     grid_states.append(new_state)
-    state_transition(grid_states, strip, period=period, iterations=5)
+    state_transition(grid_states, strip, period=period, iterations=8)

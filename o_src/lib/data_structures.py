@@ -234,7 +234,7 @@ class Grid:
         current = []
         for item in radial_items:
             current += item
-            if len(current) > 10:
+            if len(current) > 15:
                 op_radial_items.append(current)
                 current = []
 
