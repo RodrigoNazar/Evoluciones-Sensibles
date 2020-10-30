@@ -16,6 +16,13 @@ def matrix_read(path):
     return data
 
 
+def clear_strip(strip, n_leds):
+    for i in range(n_leds):
+        strip[i] = (0, 0, 0)
+
+    strip.write()
+
+
 def state_transition(states, strip, period=0, iterations=10):
     '''
     Transition from the previous to the new grid state in $period seconds

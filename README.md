@@ -55,9 +55,10 @@ The final return of this routine should be
 
 ```
 ampy --port /dev/ttyUSB0 mkdir grid
-ampy --port /dev/ttyUSB0 put src/grid/Grid.txt grid/Grid.txt
-ampy --port /dev/ttyUSB0 put src/lib
-ampy --port /dev/ttyUSB0 put src/main.py
+ampy --port /dev/ttyUSB0 put o_src/grid/Grid.txt grid/Grid.txt
+ampy --port /dev/ttyUSB0 put o_src/lib
+ampy --port /dev/ttyUSB0 put o_src/boot.py
+ampy --port /dev/ttyUSB0 put o_src/main.py
 ampy --port /dev/ttyUSB0 ls
 ```
 

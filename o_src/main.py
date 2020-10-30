@@ -2,7 +2,7 @@ import _thread as th
 from machine import Pin
 from lib.hcsr04 import HCSR04
 from lib.data_structures import Stream, Grid
-from lib.utils import matrix_read
+from lib.utils import matrix_read, clear_strip
 from lib.routines import senser, lighter
 import neopixel
 
@@ -19,6 +19,7 @@ def main():
 
     # NeoPixel Strip object
     strip = neopixel.NeoPixel(Pin(STRIP_PIN), N_LEDS)
+    clear_strip(strip, N_LEDS)
     print('\nStrip ready!')
 
     # Grid Object
@@ -45,5 +46,5 @@ def main():
     print('\nStarting the routines threads...')
     # Starting the routines in threads
     th.start_new_thread(senser, (sensor, sensor_stream))  # Senser thread
-    th.start_new_thread(lighter, (grid_states, sensor_stream))  # Light thread
+    th.start_new_thread(lighter, (grid_states, strip, sensor_stream))  # Light thread
     print('Threads ready!')

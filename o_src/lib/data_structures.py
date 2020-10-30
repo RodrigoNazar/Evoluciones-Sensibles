@@ -337,7 +337,10 @@ class Stream:
             return 0
 
     def last_state(self):
-        return self.data[-1]
+        if len(self) > 0:
+            return self.data[-1]
+        else:
+            return []
 
     def __getitem__(self, item):
         return self.data[item]
