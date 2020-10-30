@@ -1,8 +1,9 @@
 import time
 import random
+from utils import state_transition
 
 
-def senser(sensor, sensor_stream, w_time=.15):
+def senser(sensor, sensor_stream, w_time=.1):
     '''
     Distance sensor thread routine
     '''
@@ -15,7 +16,7 @@ def senser(sensor, sensor_stream, w_time=.15):
         time.sleep(w_time)
 
 
-def lighter(grid, sensor_stream, debug=False):
+def lighter(grid_states, sensor_stream, debug=False):
     prev_dist = 150
     first_loop = True
     while 1:
@@ -33,16 +34,16 @@ def lighter(grid, sensor_stream, debug=False):
         # Y calcula parámetros en función de la distancia
         if abs(vel) <= 50:
             period = dist * .5 / 300
-            random_blink(grid, period=period, intensity=.5)
+            random_blink(grid_states, period=period, intensity=.5)
 
         elif 50 < vel and not first_loop:
             # print('Center wave1: dist', dist, 'vel', vel)
-            reverse_center_wave(grid, period=.0, intensity=.80)
+            reverse_center_wave(grid_states, period=.0, intensity=.80)
 
         # elif -5 > vel and vel > -15:
         elif -50 > vel and not first_loop:
             # print('Center wave2: dist', dist, 'vel', vel)
-            center_wave(grid, period=.0, intensity=.80)
+            center_wave(grid_states, period=.0, intensity=.80)
 
         # Data for the computation of the velocity
         prev_dist = dist
@@ -50,20 +51,20 @@ def lighter(grid, sensor_stream, debug=False):
             first_loop = False
 
 
-def center_wave(grid, period, intensity):
-    progression = grid.radial_progression
+def center_wave(grid_states, period, intensity):
+    progression = grid_states.kwargs.get('radial_progression')
 
     color = int(255 * intensity)
 
     for leds in progression:
         new_state = [(led, color, color, color) for led in leds]
 
-        grid.set_state_elements_by_num(new_state)
-        grid.state_transition(period, iterations=1)
+        grid_states.append(new_state)
+        state_transition(grid_states, period, iterations=1)
 
 
-def reverse_center_wave(grid, period, intensity):
-    progression = grid.radial_progression
+def reverse_center_wave(grid_states, period, intensity):
+    progression = grid_states.kwargs.get('radial_progression')
     progression.reverse()
 
     color = int(255 * intensity)
@@ -71,16 +72,18 @@ def reverse_center_wave(grid, period, intensity):
     for leds in progression:
         new_state = [(led, color, color, color) for led in leds]
 
-        grid.set_state_elements_by_num(new_state)
-        grid.state_transition(period, iterations=1)
+        grid_states.append(new_state)
+        state_transition(grid_states, period, iterations=1)
 
 
-def random_blink(grid, period, intensity, prob=.5):
+def random_blink(grid_states, period, intensity, prob=.5):
 
-    new_state = grid.last_state().copy()
+    new_state = grid_states.last_state().copy()
+
+    # new_state = []
 
     # Led deletion phase
-    for led in grid.last_state():
+    for led in grid_states.last_state():
         # With a probability of prob, we turn off the led
         if random.randint(0, 10) / 10 < prob:
             new_state = [i for i in new_state if i[0] != led[0]]
@@ -96,5 +99,5 @@ def random_blink(grid, period, intensity, prob=.5):
             led_object = (new_led, color, color, color)
             new_state.append(led_object)
 
-    grid.set_state_elements_by_num(new_state)
-    grid.state_transition(period, iterations=15)
+    grid_states.set_state_elements_by_num(new_state)
+    grid_states.state_transition(period, iterations=15)
